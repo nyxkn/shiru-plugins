@@ -360,7 +360,15 @@ void ChipWavePlugin::run(const float **, float **outputs, uint32_t frames, const
 
             //process lfo, per channel
 
-            while(SynthChannel[chn].lfo_count>=pi) SynthChannel[chn].lfo_count-=pi;
+            /* while(SynthChannel[chn].lfo_count>=pi) SynthChannel[chn].lfo_count-=pi; */
+
+            /* this line above (original line commented out) resets lfo_count back to 0 when it reaches pi
+               this only produces the positive value part of the sine curve
+               arguably this was a typo and what was meant was =-pi instead of -=pi
+               that way it would correcly go through a complete sine wave, as one would expect out of an lfo
+               maybe we could also do without this line at all and let lfo_count grow indefinitely? */
+
+            while(SynthChannel[chn].lfo_count>=pi) SynthChannel[chn].lfo_count=-pi;
 
             depth=1.0f*(1.0f-Program.values[pIdEnvLfoDepth])+SynthChannel[chn].ef_level*Program.values[pIdEnvLfoDepth];    //balance between just lfo and influenced by envelope
 
